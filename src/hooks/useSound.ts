@@ -1,22 +1,37 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 export const useSound = (src: string, volume: number = 1) => {
-  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const audioCtx = useRef<AudioContext | null>(null);
+  const audioBuffer = useRef<AudioBuffer | null>(null);
+  const audioBufferNode = useRef<AudioBufferSourceNode | null>(null);
+
+  const prepareAudioBufferNode = useRef(() => {
+    if (audioCtx.current == null) {
+      return;
+    }
+    audioBufferNode.current = audioCtx.current.createBufferSource();
+    audioBufferNode.current.buffer = audioBuffer.current;
+    audioBufferNode.current.connect(audioCtx.current.destination);
+  });
 
   useEffect(() => {
-    const audioTag = new Audio(`${window.location.href}${src}`);
-    audioTag.volume = volume;
-    setAudio(audioTag)
+    const initialAudio = async() => {
+      audioCtx.current = new AudioContext();
+      const response = await fetch(`${window.location.href}${src}`)
+      const responseBuffer = await response.arrayBuffer();
+
+      audioBuffer.current = await audioCtx.current.decodeAudioData(responseBuffer);
+      prepareAudioBufferNode.current();
+    };
+
+    initialAudio();
   }, [src, volume]);
 
   const play = useCallback(() => {
-    if (audio == null) {
-      return;
-    }
-    // audio.pause();
-    // audio.currentTime = 0;
-    audio.play();
-  }, [audio]);
+    audioBufferNode.current?.start(0);
+    prepareAudioBufferNode.current();
+  }, []);
+
 
   return { play };
 }
