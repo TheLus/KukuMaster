@@ -34,7 +34,7 @@ export const useKukuQuestion = () => {
     } else {
       incorrect();
     }
-    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`, isCorrect);
+    addAnsweredList(`${q1} x ${q2} = ${ans}`, isCorrect);
     resetQuestion();
   }, [addAnsweredList, correct, incorrect, resetQuestion, q1, q2]);
 
