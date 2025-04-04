@@ -1,4 +1,7 @@
+import vikeReact from "vike-react/config";
+
 export default {
-  title: 'title from config',
-  description: 'description from config',
-}
+  extends: [vikeReact],
+  title: "title from config",
+  description: "description from config",
+};
