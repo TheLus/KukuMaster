@@ -13,6 +13,7 @@ export function Head() {
         margin: 0;
       }
       #root {
+        position: relative;
         height: calc(var(--vh, 1vh) * 100);
       }
     `}</style>

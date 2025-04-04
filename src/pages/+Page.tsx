@@ -10,7 +10,7 @@ function Page() {
   console.log('===== Page', q1, q2, a1, a2, a3);
 
   return (
-    <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
+    <Grid container direction='column' alignItems='center' justifyContent='center'>
       <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={350}>
         <AnsweredList />
       </Grid>
