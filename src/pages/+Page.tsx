@@ -1,18 +1,22 @@
 import { AnswerButton } from '@/components/AnswerButton';
+import { useAnsweredList } from '@/hooks/useAnsweredList';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
-import { useSound } from '@/hooks/useSound';
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 
 export { Page };
 
 function Page() {
   const { a1, a2, a3, q1, q2, answer } = useKukuQuestion();
-  const { play } = useSound('/correct.mp3');
+  const { answeredList } = useAnsweredList();
 
   return (
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
-      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={400}>
-        <Typography>4 x 2 = 8</Typography>
+      <Grid container direction='column' maxWidth={700} alignItems='center' gap={0} position='absolute' bottom={350}>
+        {
+          answeredList.map((answered) => {
+            return <Typography fontSize={18}>{answered}</Typography>;
+          })
+        }
       </Grid>
       <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={100}>
         <Grid container alignItems='center' gap={2}>
@@ -25,7 +29,6 @@ function Page() {
           <AnswerButton answer={a2} onClick={answer} />
           <AnswerButton answer={a3} onClick={answer} />
         </Grid>
-        <Button onClick={play}>再生</Button>
       </Grid>
     </Grid>
   );

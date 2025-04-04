@@ -11,7 +11,10 @@ export const useSound = (src: string, volume: number = 1) => {
     }
     audioBufferNode.current = audioCtx.current.createBufferSource();
     audioBufferNode.current.buffer = audioBuffer.current;
-    audioBufferNode.current.connect(audioCtx.current.destination);
+    const gainNode = audioCtx.current.createGain();
+    gainNode.gain.value = volume;
+    audioBufferNode.current.connect(gainNode);
+    gainNode.connect(audioCtx.current.destination);
   });
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useSound } from './useSound';
+import { useAnsweredList } from './useAnsweredList';
 
 export const useKukuQuestion = () => {
   const [q1, setQ1] = useState(0);
@@ -7,6 +8,7 @@ export const useKukuQuestion = () => {
   const [a, setA] = useState([1, 0, 0]);
   const { play: correct } = useSound('/correct.mp3');
   const { play: incorrect } = useSound('/incorrect.mp3', 0.3);
+  const { addAnsweredList } = useAnsweredList();
 
   const answer = useCallback((ans: number) => {
     if (ans === q1 * q2) {
@@ -14,6 +16,7 @@ export const useKukuQuestion = () => {
     } else {
       incorrect();
     }
+    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`);
 
     const newQ1 = Math.floor(Math.random() * 8) + 2;
     const newQ2 = Math.floor(Math.random() * 8) + 2;
