@@ -2,6 +2,6 @@ import vikeReact from "vike-react/config";
 
 export default {
   extends: [vikeReact],
-  title: "title from config",
-  description: "description from config",
+  title: "九九マスター！",
+  description: "Web page for multiplication table masters.",
 };
