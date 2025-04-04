@@ -1,7 +1,10 @@
-const answeredList: string[] = [];
+const answeredList: { formula: string, isCorrect: boolean }[] = [];
 
-const addAnsweredList = (answer: string) => {
-  answeredList.push(answer);
+const addAnsweredList = (formula: string, isCorrect: boolean) => {
+  answeredList.push({
+    formula,
+    isCorrect,
+  });
 }
 export const useAnsweredList = () => {
   return {

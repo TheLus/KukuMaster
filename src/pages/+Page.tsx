@@ -1,5 +1,5 @@
 import { AnswerButton } from '@/components/AnswerButton';
-import { useAnsweredList } from '@/hooks/useAnsweredList';
+import { AnsweredList } from '@/components/AnsweredList';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
 import { Grid, Typography } from '@mui/material';
 
@@ -7,16 +7,11 @@ export { Page };
 
 function Page() {
   const { a1, a2, a3, q1, q2, answer } = useKukuQuestion();
-  const { answeredList } = useAnsweredList();
 
   return (
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
-      <Grid container direction='column' maxWidth={700} alignItems='center' gap={0} position='absolute' bottom={350}>
-        {
-          answeredList.map((answered, i) => {
-            return <Typography fontSize={18} key={i}>{answered}</Typography>;
-          })
-        }
+      <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={350}>
+        <AnsweredList />
       </Grid>
       <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={100}>
         <Grid container alignItems='center' gap={2}>

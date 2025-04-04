@@ -24,12 +24,13 @@ export const useKukuQuestion = () => {
   }, []);
 
   const answer = useCallback((ans: number) => {
-    if (ans === q1 * q2) {
+    const isCorrect = ans === q1 * q2;
+    if (isCorrect) {
       correct();
     } else {
       incorrect();
     }
-    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`);
+    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`, isCorrect);
     resetQuestion();
   }, [addAnsweredList, correct, incorrect, resetQuestion, q1, q2]);
 
