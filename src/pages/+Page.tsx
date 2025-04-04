@@ -1,30 +1,24 @@
 import { AnswerButton } from '@/components/AnswerButton';
+import { useKukuQuestion } from '@/hooks/useKukuQuestion';
 import { Grid, Typography } from '@mui/material';
-import { useCallback, useState } from "react";
 
 export { Page };
 
 function Page() {
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(0);
-
-  const setQuestion = useCallback(() => {
-    setA(Math.floor(Math.random() * 8) + 2);
-    setB(Math.floor(Math.random() * 8) + 2);
-  }, []);
+  const { a1, a2, a3, q1, q2, answer } = useKukuQuestion();
 
   return (
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
-      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3}>
+      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={100}>
         <Grid container alignItems='center' gap={2}>
-          <Typography variant='h1'>{a}</Typography>
+          <Typography variant='h1'>{q1}</Typography>
           <Typography variant='h2'>x</Typography>
-          <Typography variant='h1'>{b}</Typography>
+          <Typography variant='h1'>{q2}</Typography>
         </Grid>
         <Grid container gap={3}>
-          <AnswerButton answer={16} onClick={setQuestion} />
-          <AnswerButton answer={18} onClick={setQuestion} />
-          <AnswerButton answer={20} onClick={setQuestion} />
+          <AnswerButton answer={a1} onClick={answer} />
+          <AnswerButton answer={a2} onClick={answer} />
+          <AnswerButton answer={a3} onClick={answer} />
         </Grid>
       </Grid>
     </Grid>
