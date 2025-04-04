@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
+import { useQuery } from './useQuery';
 
 let count = 0;
 
@@ -11,6 +12,7 @@ export const useKukuQuestion = () => {
   const { play: correct } = useSound('/correct.mp3');
   const { play: incorrect } = useSound('/incorrect.mp3', 0.3);
   const { addAnsweredList } = useAnsweredList();
+  const { correctModeQuery } = useQuery('correctMode');
 
   const resetQuestion = useCallback(() => {
     count++;
@@ -42,5 +44,5 @@ export const useKukuQuestion = () => {
     resetQuestion();
   }, [resetQuestion]);
 
-  return {a1: a[0], a2: a[1], a3: a[2], q1, q2, answer, count};
+  return {a1: a[0], a2: a[1], a3: a[2], q1, q2, answer, count, isCorrectMode: correctModeQuery === '1'};
 };
