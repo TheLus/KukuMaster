@@ -13,8 +13,8 @@ function Page() {
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
       <Grid container direction='column' maxWidth={700} alignItems='center' gap={0} position='absolute' bottom={350}>
         {
-          answeredList.map((answered) => {
-            return <Typography fontSize={18}>{answered}</Typography>;
+          answeredList.map((answered, i) => {
+            return <Typography fontSize={18} key={i}>{answered}</Typography>;
           })
         }
       </Grid>

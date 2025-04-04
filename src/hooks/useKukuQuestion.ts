@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
 
@@ -10,14 +10,7 @@ export const useKukuQuestion = () => {
   const { play: incorrect } = useSound('/incorrect.mp3', 0.3);
   const { addAnsweredList } = useAnsweredList();
 
-  const answer = useCallback((ans: number) => {
-    if (ans === q1 * q2) {
-      correct();
-    } else {
-      incorrect();
-    }
-    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`);
-
+  const resetQuestion = useCallback(() => {
     const newQ1 = Math.floor(Math.random() * 8) + 2;
     const newQ2 = Math.floor(Math.random() * 8) + 2;
     const newA = [0, 0, 0];
@@ -28,7 +21,21 @@ export const useKukuQuestion = () => {
     setQ1(newQ1);
     setQ2(newQ2);
     setA(newA);
-  }, [correct, incorrect, q1, q2]);
+  }, []);
+
+  const answer = useCallback((ans: number) => {
+    if (ans === q1 * q2) {
+      correct();
+    } else {
+      incorrect();
+    }
+    addAnsweredList(`${q1} x ${q2} = ${q1 * q2}`);
+    resetQuestion();
+  }, [addAnsweredList, correct, incorrect, resetQuestion, q1, q2]);
+
+  useEffect(() => {
+    resetQuestion();
+  }, [resetQuestion]);
 
   return {a1: a[0], a2: a[1], a3: a[2], q1, q2, answer};
 };
