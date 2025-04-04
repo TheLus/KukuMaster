@@ -9,6 +9,9 @@ function Page() {
 
   return (
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
+      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={400}>
+        <Typography>4 x 2 = 8</Typography>
+      </Grid>
       <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={100}>
         <Grid container alignItems='center' gap={2}>
           <Typography variant='h1'>{q1}</Typography>

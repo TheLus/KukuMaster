@@ -4,8 +4,10 @@ export const useKukuQuestion = () => {
   const [q1, setQ1] = useState(0);
   const [q2, setQ2] = useState(0);
   const [a, setA] = useState([1, 0, 0]);
+  // const { play } = useSound('/correct.mp3');
 
   const answer = useCallback(() => {
+    // play();
     const newQ1 = Math.floor(Math.random() * 8) + 2;
     const newQ2 = Math.floor(Math.random() * 8) + 2;
     const newA = [0, 0, 0];
