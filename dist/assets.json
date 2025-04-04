@@ -18,7 +18,7 @@
     "src": "_vike-react-34dec741.BcWtY8Ol.css"
   },
   "node_modules/.pnpm/vike@0.4.227_react-streaming@0.4.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__vite@6.2.5_@t_ptkslaxwj6noncyh4j4mmnq3e4/node_modules/vike/dist/esm/client/client-routing-runtime/entry.js": {
-    "file": "assets/entries/entry-client-routing.ejxTg1wd.js",
+    "file": "assets/entries/entry-client-routing.ighHx0wV.js",
     "name": "entries/entry-client-routing",
     "src": "node_modules/.pnpm/vike@0.4.227_react-streaming@0.4.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__vite@6.2.5_@t_ptkslaxwj6noncyh4j4mmnq3e4/node_modules/vike/dist/esm/client/client-routing-runtime/entry.js",
     "isEntry": true,
@@ -31,7 +31,7 @@
     ]
   },
   "virtual:vike:pageConfigValuesAll:client:/src/pages": {
-    "file": "assets/entries/src_pages.IaFsfbmo.js",
+    "file": "assets/entries/src_pages.D1_Q4EDe.js",
     "name": "entries/src/pages",
     "src": "virtual:vike:pageConfigValuesAll:client:/src/pages",
     "isEntry": true,

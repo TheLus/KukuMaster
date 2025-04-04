@@ -13,8 +13,8 @@ export const useSound = (src: string, volume: number = 1) => {
     if (audio == null) {
       return;
     }
-    audio.pause();
-    audio.currentTime = 0;
+    // audio.pause();
+    // audio.currentTime = 0;
     audio.play();
   }, [audio]);
 

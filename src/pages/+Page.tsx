@@ -1,11 +1,13 @@
 import { AnswerButton } from '@/components/AnswerButton';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
-import { Grid, Typography } from '@mui/material';
+import { useSound } from '@/hooks/useSound';
+import { Button, Grid, Typography } from '@mui/material';
 
 export { Page };
 
 function Page() {
   const { a1, a2, a3, q1, q2, answer } = useKukuQuestion();
+  const { play } = useSound('/correct.mp3');
 
   return (
     <Grid container direction='column' alignItems='center' justifyContent='center' height='100vh'>
@@ -23,6 +25,7 @@ function Page() {
           <AnswerButton answer={a2} onClick={answer} />
           <AnswerButton answer={a3} onClick={answer} />
         </Grid>
+        <Button onClick={play}>再生</Button>
       </Grid>
     </Grid>
   );
