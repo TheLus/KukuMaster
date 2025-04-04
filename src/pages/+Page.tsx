@@ -14,7 +14,7 @@ function Page() {
       <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={350}>
         <AnsweredList />
       </Grid>
-      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={100}>
+      <Grid container direction='column' maxWidth={700} alignItems='center' gap={3} position='absolute' bottom={60}>
         <Grid container alignItems='center' gap={2}>
           <Typography variant='h1'>{q1}</Typography>
           <Typography variant='h2'>x</Typography>
