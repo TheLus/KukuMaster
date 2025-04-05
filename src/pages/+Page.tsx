@@ -144,7 +144,7 @@ function Page() {
             <Box position='absolute' width='100dvw' height='10px' bottom={0} sx={{ backgroundColor : '#cdf' }}>
               <Box ref={progressRef} position='absolute' height='10px' top={0} left={0} sx={{ backgroundColor : '#56f' }} />
             </Box>
-            <Grid container direction='column' top='24dvh' position='absolute' gap={6} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
+            <Grid container direction='column' top='24dvh' width='100%' position='absolute' gap={6} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
               <Grid container gap={3} alignItems='baseline' display={resultCount > 0 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48}>回答数</Typography>
                 <Typography variant='h1' fontSize={80} width={130} textAlign='right'>{questionNo - questionNoOffset}</Typography>
