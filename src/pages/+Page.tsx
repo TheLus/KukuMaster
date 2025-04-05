@@ -5,6 +5,7 @@ import { useAnsweredList } from '@/hooks/useAnsweredList';
 import { useCountdownTimer } from '@/hooks/useCountdownTimer';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
 import { useKukuTitle } from '@/hooks/useKukuTitle';
+import { useSound } from '@/hooks/useSound';
 import { useTimeAttackMode } from '@/hooks/useTimeAttackMode';
 import { Box, Button, Grid, SxProps, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -12,6 +13,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 export { Page };
 
 let countdownTimer: NodeJS.Timeout;
+let resultCountTimer: NodeJS.Timeout;
 let remainingTime = 0;
 let startDate = Date.now();
 
@@ -27,20 +29,36 @@ function Page() {
   const isTimeAttacking = useRef(false);
   const [isTimeAttackFinished, setIsTimeAttackFinished] = useState(false);
   const { getKukuTitle } = useKukuTitle();
+  const { play: countdown } = useSound('/countdown.mp3', 0.2);
+  const { play: dodon } = useSound('/dodon.mp3', 0.9);
+  const { play: don } = useSound('/don.mp3');
+  const [resultCount, setResultCount] = useState(0);
+
+  const resultCountUp = useCallback(() => {
+    don();
+    setResultCount((current) => {
+      if (current >= 2) {
+        clearTimeout(resultCountTimer);
+      }
+      return current + 1
+    });
+  }, []);
 
   const updateTimeAttackTimer = useCallback(() => {
     if (!isTimeAttacking.current) {
       return;
     }
     if (remainingTime < 0 || progressRef.current == null) {
+      dodon();
       setIsTimeAttackFinished(true);
       isTimeAttacking.current = false;
+      resultCountTimer = setInterval(resultCountUp, 500);
       return;
     }
     remainingTime = TIME_ATTACK_TIME - (Date.now() - startDate);
     progressRef.current.style.width = `${(1 - remainingTime / TIME_ATTACK_TIME) * 100}dvw`;
     requestAnimationFrame(updateTimeAttackTimer);
-  }, []);
+  }, [resultCountUp]);
 
   const beginTimeAttack = useCallback(() => {
     remainingTime = TIME_ATTACK_TIME;
@@ -56,11 +74,13 @@ function Page() {
     }
     isTimeAttacking.current = false;
     setIsTimeAttackFinished(false);
+    setResultCount(0);
     remainingTime = 0;
     progressRef.current.style.width = `0dvw`;
     clearTimeout(countdownTimer);
     countdownTimer = setTimeout(() => {
       reset();
+      countdown();
       beginCountdown(3);
     }, 1000);
   }, []);
@@ -125,22 +145,22 @@ function Page() {
               <Box ref={progressRef} position='absolute' height='10px' top={0} left={0} sx={{ backgroundColor : '#56f' }} />
             </Box>
             <Grid container direction='column' top='24dvh' position='absolute' gap={6} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
-              <Grid container gap={3} alignItems='baseline'>
+              <Grid container gap={3} alignItems='baseline' display={resultCount > 0 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48}>回答数</Typography>
                 <Typography variant='h1' fontSize={80} width={130} textAlign='right'>{questionNo - questionNoOffset}</Typography>
                 <Typography variant='h1' fontSize={48}>問</Typography>
               </Grid>
-              <Grid container gap={3} alignItems='baseline'>
+              <Grid container gap={3} alignItems='baseline' display={resultCount > 1 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48}>正解率</Typography>
                 <Typography variant='h1' fontSize={80} width={130} textAlign='right'>{ Math.floor(correctRatio * 100) }</Typography>
                 <Typography variant='h1' fontSize={48}>%</Typography>
               </Grid>
-              <Grid container height={77} alignItems='flex-end'>
+              <Grid container height={77} alignItems='flex-end' display={resultCount > 2 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48} fontWeight='bold' height='93' whiteSpace='pre-wrap' textAlign='center'>{getKukuTitle(questionNo - questionNoOffset, correctRatio)}</Typography>
               </Grid>
-              <Grid container mt={4}>
-                <Button onClick={resetTimeAttack} variant={isTimeAttackMode ? 'contained' : 'outlined'} >もう一回！</Button>
-              </Grid>
+            </Grid>
+            <Grid container position='absolute' bottom={170} display={isTimeAttackFinished ? 'flex' : 'none'}>
+              <Button onClick={resetTimeAttack} variant={isTimeAttackMode ? 'contained' : 'outlined'} >もう一回！</Button>
             </Grid>
           </Grid>
         </Grid>
@@ -158,7 +178,7 @@ const sx: SxProps = () => ({
 
   ".Scroller": {
     position: 'relative',
-    width: '100%',
+    width: '100dvw',
     transition: 'transform 0.4s ease',
   },
 });
