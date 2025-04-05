@@ -17,7 +17,7 @@ let resultCountTimer: NodeJS.Timeout;
 let remainingTime = 0;
 let startDate = Date.now();
 
-const TIME_ATTACK_TIME = 30000;
+const TIME_ATTACK_TIME = 1000;
 
 function Page() {
   const { a1, a2, a3, q1, q2, questionNo, answer, reset, isCorrectMode } = useKukuQuestion();
@@ -107,7 +107,7 @@ function Page() {
       </Grid>
       <Grid container className='TopPage' justifyContent='center'>
         <Grid container className='Scroller' justifyContent='center' style={{ transform: isTimeAttackMode ? 'translateY(-100dvh)' : 'none' }}>
-          <Grid container justifyContent='center'>
+          <Grid container justifyContent='center' width='100%'>
             <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={300}>
               <AnsweredList />
             </Grid>
@@ -158,9 +158,9 @@ function Page() {
               <Grid container height={77} alignItems='flex-end' display={resultCount > 2 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48} fontWeight='bold' height='93' whiteSpace='pre-wrap' textAlign='center'>{getKukuTitle(questionNo - questionNoOffset, correctRatio)}</Typography>
               </Grid>
-            </Grid>
-            <Grid container position='absolute' bottom={170} display={isTimeAttackFinished ? 'flex' : 'none'}>
-              <Button onClick={resetTimeAttack} variant={isTimeAttackMode ? 'contained' : 'outlined'} >もう一回！</Button>
+              <Grid container bottom={170} mt={2} display={resultCount > 2 ? 'flex' : 'none'}>
+                <Button onClick={resetTimeAttack} variant={isTimeAttackMode ? 'contained' : 'outlined'} >もう一回！</Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
