@@ -17,7 +17,7 @@ let resultCountTimer: NodeJS.Timeout;
 let remainingTime = 0;
 let startDate = Date.now();
 
-const TIME_ATTACK_TIME = 1000;
+const TIME_ATTACK_TIME = 30000;
 
 function Page() {
   const { a1, a2, a3, q1, q2, questionNo, answer, reset, isCorrectMode } = useKukuQuestion();
