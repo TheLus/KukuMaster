@@ -144,8 +144,8 @@ function Page() {
             <Box position='absolute' width='100dvw' height='10px' bottom={0} sx={{ backgroundColor : '#cdf' }}>
               <Box ref={progressRef} position='absolute' height='10px' top={0} left={0} sx={{ backgroundColor : '#56f' }} />
             </Box>
-            <Grid container direction='column' top='10dvh' width='100%' position='absolute' gap={3} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
-              <Grid container alignItems='center' width='100%' height={164}>
+            <Grid container direction='column' top={80} width='100%' position='absolute' gap={3} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
+              <Grid container alignItems='center' width='100%' height='calc(100dvh - 555px)'>
                 <AnsweredList wrap />
               </Grid>
               <Grid container gap={3} alignItems='baseline' display={resultCount > 0 ? 'flex' : 'none'}>
