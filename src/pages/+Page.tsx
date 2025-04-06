@@ -17,7 +17,7 @@ let resultCountTimer: NodeJS.Timeout;
 let remainingTime = 0;
 let startDate = Date.now();
 
-const TIME_ATTACK_TIME = 3000;
+const TIME_ATTACK_TIME = 30000;
 
 function Page() {
   const { a1, a2, a3, q1, q2, questionNo, answer, reset, isCorrectMode } = useKukuQuestion();
@@ -145,7 +145,7 @@ function Page() {
               <Box ref={progressRef} position='absolute' height='10px' top={0} left={0} sx={{ backgroundColor : '#56f' }} />
             </Box>
             <Grid container direction='column' top={100} width='100%' position='absolute' gap={3} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
-              <Grid container alignItems='center' width='100%' height='calc(100dvh - 555px)' mb={-24} justifyContent='center'>
+              <Grid container alignItems='center' width='100%' height='calc(100dvh - 555px)' mb={-3} justifyContent='center'>
                 <AnsweredList wrap />
               </Grid>
               <Grid container gap={3} alignItems='baseline' display={resultCount > 0 ? 'flex' : 'none'}>
