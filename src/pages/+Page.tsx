@@ -8,7 +8,7 @@ import { useKukuTitle } from '@/hooks/useKukuTitle';
 import { useSound } from '@/hooks/useSound';
 import { useTimeAttackMode } from '@/hooks/useTimeAttackMode';
 import { Box, Button, Grid, SxProps, Typography } from '@mui/material';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export { Page };
 
@@ -144,7 +144,10 @@ function Page() {
             <Box position='absolute' width='100dvw' height='10px' bottom={0} sx={{ backgroundColor : '#cdf' }}>
               <Box ref={progressRef} position='absolute' height='10px' top={0} left={0} sx={{ backgroundColor : '#56f' }} />
             </Box>
-            <Grid container direction='column' top='24dvh' width='100%' position='absolute' gap={6} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
+            <Grid container direction='column' top='10dvh' width='100%' position='absolute' gap={3} alignItems='center' display={isTimeAttackFinished ? 'flex' : 'none'}>
+              <Grid container alignItems='center' height={270}>
+                <AnsweredList wrap />
+              </Grid>
               <Grid container gap={3} alignItems='baseline' display={resultCount > 0 ? 'flex' : 'none'}>
                 <Typography variant='h1' fontSize={48}>回答数</Typography>
                 <Typography variant='h1' fontSize={80} width={130} textAlign='right'>{questionNo - questionNoOffset}</Typography>

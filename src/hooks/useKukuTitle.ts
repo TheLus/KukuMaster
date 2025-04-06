@@ -14,10 +14,10 @@ export const useKukuTitle = () => {
     if (questionCount < 10 || correctRatio < 0.6) {
       return '九九みならい';
     }
-    if (questionCount < 15 || correctRatio < 1) {
+    if (questionCount < 15 || correctRatio < 0.9) {
       return '九九せんせい';
     }
-    if (questionCount < 20) {
+    if (questionCount < 20 || correctRatio < 1) {
       return '九九たつじん';
     }
     if (questionCount < 25) {
