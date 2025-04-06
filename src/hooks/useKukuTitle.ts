@@ -24,9 +24,24 @@ export const useKukuTitle = () => {
       return '九九マスター！';
     }
     if (questionCount < 30) {
+      return '九九将軍';
+    }
+    if (questionCount < 31) {
+      return '九九王';
+    }
+    if (questionCount < 32) {
+      return '九九龍';
+    }
+    if (questionCount < 33) {
       return '九九ノ鬼';
     }
-    return '九九ノ神';
+    if (questionCount < 34) {
+      return '九九ノ神';
+    }
+    if (questionCount < 35) {
+      return '九九九九';
+    }
+    return '卍';
   }, []);
 
   return { getKukuTitle };
