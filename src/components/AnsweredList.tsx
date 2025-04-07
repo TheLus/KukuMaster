@@ -13,7 +13,7 @@ type AnsweredListProps = {
 export const AnsweredList = ({ wrap }: AnsweredListProps) => {
   const { answeredList } = useAnsweredList();
 
-  return <Grid container direction='column' alignItems='space-between' height='100%' columnGap={3}>
+  return <Grid container direction='column' alignItems='space-between' height='100%' width='fit-content' columnGap={3}>
   {
     answeredList.map(({ formula, isCorrect }, i) => {
       return <Grid container alignItems='center' gap={wrap ? 1 : 2}>
