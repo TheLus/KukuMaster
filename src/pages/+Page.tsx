@@ -2,103 +2,18 @@ import { AnswerButton } from '@/components/AnswerButton';
 import { AnsweredList } from '@/components/AnsweredList';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import { useAnsweredList } from '@/hooks/useAnsweredList';
-import { useCountdownTimer } from '@/hooks/useCountdownTimer';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
 import { useKukuTitle } from '@/hooks/useKukuTitle';
-import { useSound } from '@/hooks/useSound';
 import { useTimeAttackMode } from '@/hooks/useTimeAttackMode';
 import { Box, Button, Grid, SxProps, Typography } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
 
 export { Page };
-
-let countdownTimer: NodeJS.Timeout;
-let resultCountTimer: NodeJS.Timeout;
-let remainingTime = 0;
-let startDate = Date.now();
-
-const TIME_ATTACK_TIME = 30000;
 
 function Page() {
   const { a1, a2, a3, q1, q2, questionNo, answer, reset, isCorrectMode } = useKukuQuestion();
   const { correctRatio } = useAnsweredList();
-  const { toggleTimeAttackMode, isTimeAttackMode } = useTimeAttackMode();
-  const { beginCountdown, count } = useCountdownTimer();
-  const [questionNoOffset, setQuestionNoOffset] = useState(0);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const isTimeAttacking = useRef(false);
-  const [isTimeAttackFinished, setIsTimeAttackFinished] = useState(false);
+  const { toggleTimeAttackMode, resetTimeAttack, resultCount, isTimeAttackFinished, isTimeAttackMode, count, questionNoOffset, isTimeAttacking, progressRef } = useTimeAttackMode({ questionNo, reset });
   const { getKukuTitle } = useKukuTitle();
-  const { play: countdown } = useSound('/countdown.mp3', 0.2);
-  const { play: dodon } = useSound('/dodon.mp3', 0.9);
-  const { play: don } = useSound('/don.mp3');
-  const [resultCount, setResultCount] = useState(0);
-
-  const resultCountUp = useCallback(() => {
-    don();
-    setResultCount((current) => {
-      if (current >= 2) {
-        clearTimeout(resultCountTimer);
-      }
-      return current + 1
-    });
-  }, []);
-
-  const updateTimeAttackTimer = useCallback(() => {
-    if (!isTimeAttacking.current) {
-      return;
-    }
-    if (remainingTime < 0 || progressRef.current == null) {
-      dodon();
-      setIsTimeAttackFinished(true);
-      isTimeAttacking.current = false;
-      resultCountTimer = setInterval(resultCountUp, 500);
-      return;
-    }
-    remainingTime = TIME_ATTACK_TIME - (Date.now() - startDate);
-    progressRef.current.style.width = `${(1 - remainingTime / TIME_ATTACK_TIME) * 100}dvw`;
-    requestAnimationFrame(updateTimeAttackTimer);
-  }, [resultCountUp]);
-
-  const beginTimeAttack = useCallback(() => {
-    remainingTime = TIME_ATTACK_TIME;
-    startDate = Date.now();
-    requestAnimationFrame(updateTimeAttackTimer);
-    isTimeAttacking.current = true;
-    setQuestionNoOffset(questionNo);
-  }, [questionNo, updateTimeAttackTimer]);
-
-  const resetTimeAttack = useCallback(() => {
-    if (progressRef.current == null) {
-      return;
-    }
-    isTimeAttacking.current = false;
-    setIsTimeAttackFinished(false);
-    setResultCount(0);
-    remainingTime = 0;
-    progressRef.current.style.width = `0dvw`;
-    clearTimeout(countdownTimer);
-    countdownTimer = setTimeout(() => {
-      reset();
-      countdown();
-      beginCountdown(3);
-    }, 1000);
-  }, []);
-
-  useEffect(() => {
-    if (isTimeAttackMode) {
-      resetTimeAttack();
-    } else {
-      isTimeAttacking.current = false;
-      clearTimeout(countdownTimer);
-    }
-  }, [isTimeAttackMode, resetTimeAttack]);
-
-  useEffect(() => {
-    if (count === 0 && isTimeAttackMode) {
-      beginTimeAttack();
-    }
-  }, [count, isTimeAttackMode, beginTimeAttack]);
 
   return (
     <Grid container direction='column' sx={sx}>
