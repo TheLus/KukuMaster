@@ -10,7 +10,7 @@ import { Box, Button, Grid, SxProps, Typography } from '@mui/material';
 export { Page };
 
 function Page() {
-  const { a1, a2, a3, q1, q2, questionNo, answer, reset, isCorrectMode } = useKukuQuestion();
+  const { a1, a2, a3, q1, q2, ans, questionNo, answer, reset, isShowCorrect, isTrainingMode, toggleTrainingMode } = useKukuQuestion();
   const { correctRatio } = useAnsweredList();
   const { toggleTimeAttackMode, resetTimeAttack, resultCount, isTimeAttackFinished, isTimeAttackMode, count, questionNoOffset, isTimeAttacking, progressRef } = useTimeAttackMode({ questionNo, reset });
   const { getKukuTitle } = useKukuTitle();
@@ -19,6 +19,9 @@ function Page() {
     <Grid container direction='column' sx={sx}>
       <Grid container position='absolute' left={10} top={10} width={90} zIndex={1}>
         <Button onClick={toggleTimeAttackMode} variant={isTimeAttackMode ? 'contained' : 'outlined'} >タイム<br/>アタック</Button>
+      </Grid>
+      <Grid container position='absolute' right={10} top={10} width={90} zIndex={1}>
+        <Button onClick={toggleTrainingMode} variant={isTrainingMode ? 'contained' : 'outlined'} sx={{ width: 90 }}>トレー<br/>ニング</Button>
       </Grid>
       <Grid container className='TopPage' justifyContent='center'>
         <Grid container className='Scroller' justifyContent='center' style={{ transform: isTimeAttackMode ? 'translateY(-100dvh)' : 'none' }}>
@@ -33,9 +36,9 @@ function Page() {
                 <Typography variant='h1'>{q2}</Typography>
               </Grid>
               <Grid container gap={3}>
-                <AnswerButton answer={a1} onClick={answer} key={`${questionNo}_${a1}_1`} isCorrect={isCorrectMode && q1 * q2 === a1} />
-                <AnswerButton answer={a2} onClick={answer} key={`${questionNo}_${a2}_2`} isCorrect={isCorrectMode && q1 * q2 === a2} />
-                <AnswerButton answer={a3} onClick={answer} key={`${questionNo}_${a3}_3`} isCorrect={isCorrectMode && q1 * q2 === a3} />
+                <AnswerButton answer={a1} onClick={answer} key={`${questionNo}_${a1}_1`} isCorrect={isShowCorrect && ans === a1} />
+                <AnswerButton answer={a2} onClick={answer} key={`${questionNo}_${a2}_2`} isCorrect={isShowCorrect && ans === a2} />
+                <AnswerButton answer={a3} onClick={answer} key={`${questionNo}_${a3}_3`} isCorrect={isShowCorrect && ans === a3} />
               </Grid>
             </Grid>
           </Grid>
@@ -51,9 +54,9 @@ function Page() {
                 <Typography variant='h1'>{q2}</Typography>
               </Grid>
               <Grid container gap={3}>
-                <AnswerButton answer={a1} onClick={answer} key={`${questionNo}_${a1}_1`} isCorrect={isCorrectMode && q1 * q2 === a1} />
-                <AnswerButton answer={a2} onClick={answer} key={`${questionNo}_${a2}_2`} isCorrect={isCorrectMode && q1 * q2 === a2} />
-                <AnswerButton answer={a3} onClick={answer} key={`${questionNo}_${a3}_3`} isCorrect={isCorrectMode && q1 * q2 === a3} />
+                <AnswerButton answer={a1} onClick={answer} key={`${questionNo}_${a1}_1`} isCorrect={isShowCorrect && ans === a1} />
+                <AnswerButton answer={a2} onClick={answer} key={`${questionNo}_${a2}_2`} isCorrect={isShowCorrect && ans === a2} />
+                <AnswerButton answer={a3} onClick={answer} key={`${questionNo}_${a3}_3`} isCorrect={isShowCorrect && ans === a3} />
               </Grid>
             </Grid>
             <Box position='absolute' width='100dvw' height='10px' bottom={0} sx={{ backgroundColor : '#cdf' }}>

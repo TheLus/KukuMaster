@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
 import { useQuery } from './useQuery';
 
 let questionNo = 0;
+let correctTimer: NodeJS.Timeout;
 
 export const useKukuQuestion = () => {
   const [q1, setQ1] = useState(0);
@@ -13,11 +14,16 @@ export const useKukuQuestion = () => {
   const { play: incorrect } = useSound('/incorrect.mp3', 0.3);
   const { addAnsweredList, resetAnsweredList } = useAnsweredList();
   const { correctModeQuery } = useQuery('correctMode');
+  const ans = useMemo(() => q1 * q2, [q1, q2]);
+  const [isTrainingMode, setIsTrainingMode] = useState(false);
+  const [_isShowCorrect, setIsShowCorrect] = useState(false);
+  const isShowCorrect = useMemo(() => _isShowCorrect || correctModeQuery === '1', [_isShowCorrect, correctModeQuery]);
 
-  const resetQuestion = useCallback(() => {
+  const resetQuestion = useCallback(({ isLastCorrect = false }: { isLastCorrect: boolean } = { isLastCorrect: false }) => {
     questionNo++;
-    const newQ1 = Math.floor(Math.random() * 8) + 2;
-    const newQ2 = Math.floor(Math.random() * 8) + 2;
+    const isResetQuestion = !(isTrainingMode && !isLastCorrect);
+    const newQ1 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q1;
+    const newQ2 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q2;
     const newA = [0, 0, 0];
     const correctNo = Math.floor(Math.random() * 3);
     newA[0] = newQ1 * newQ2 + newQ1 * (0 - correctNo);
@@ -26,7 +32,13 @@ export const useKukuQuestion = () => {
     setQ1(newQ1);
     setQ2(newQ2);
     setA(newA);
-  }, []);
+
+    setIsShowCorrect(false);
+    clearTimeout(correctTimer);
+    correctTimer = setTimeout(() => {
+      setIsShowCorrect(true);
+    }, 1500);
+  }, [q1, q2, isTrainingMode]);
 
   const answer = useCallback((ans: number) => {
     const isCorrect = ans === q1 * q2;
@@ -36,7 +48,7 @@ export const useKukuQuestion = () => {
       incorrect();
     }
     addAnsweredList(`${q1} x ${q2} = ${ans}`, isCorrect);
-    resetQuestion();
+    resetQuestion({ isLastCorrect: isCorrect });
   }, [addAnsweredList, correct, incorrect, resetQuestion, q1, q2]);
 
   const reset = useCallback(() => {
@@ -46,7 +58,33 @@ export const useKukuQuestion = () => {
 
   useEffect(() => {
     resetQuestion();
-  }, [resetQuestion]);
+  }, []);
 
-  return {a1: a[0], a2: a[1], a3: a[2], q1, q2, answer, reset, questionNo, isCorrectMode: correctModeQuery === '1'};
+  const toggleTrainingMode = useCallback(() => {
+    setIsTrainingMode((current) => {
+      const next = !current;
+      if (next) {
+        setIsShowCorrect(true);
+      } else {
+        clearTimeout(correctTimer);
+        setIsShowCorrect(false);
+      }
+      return next;
+    });
+  }, []);
+
+  return {
+    a1: a[0],
+    a2: a[1],
+    a3: a[2],
+    q1,
+    q2,
+    ans,
+    answer,
+    reset,
+    questionNo,
+    toggleTrainingMode,
+    isTrainingMode,
+    isShowCorrect,
+  };
 };
