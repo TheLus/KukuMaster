@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
 import { useQuery } from './useQuery';
@@ -17,11 +17,12 @@ export const useKukuQuestion = () => {
   const ans = useMemo(() => q1 * q2, [q1, q2]);
   const [isTrainingMode, setIsTrainingMode] = useState(false);
   const [_isShowCorrect, setIsShowCorrect] = useState(false);
-  const isShowCorrect = useMemo(() => _isShowCorrect || correctModeQuery === '1', [_isShowCorrect, correctModeQuery]);
+  const ___isShowCorrect = useRef(false);
+  const isShowCorrect = useMemo(() => (isTrainingMode && _isShowCorrect) || correctModeQuery === '1', [isTrainingMode, _isShowCorrect, correctModeQuery]);
 
   const resetQuestion = useCallback(({ isLastCorrect = false }: { isLastCorrect: boolean } = { isLastCorrect: false }) => {
     questionNo++;
-    const isResetQuestion = !(isTrainingMode && !isLastCorrect);
+    const isResetQuestion = !(isTrainingMode && (!isLastCorrect || ___isShowCorrect.current));
     const newQ1 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q1;
     const newQ2 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q2;
     const newA = [0, 0, 0];
@@ -72,6 +73,10 @@ export const useKukuQuestion = () => {
       return next;
     });
   }, []);
+
+  useEffect(() => {
+    ___isShowCorrect.current = _isShowCorrect;
+  }, [_isShowCorrect]);
 
   return {
     a1: a[0],
