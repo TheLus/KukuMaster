@@ -4,8 +4,10 @@ import { useAnsweredList } from './useAnsweredList';
 import { useQuery } from './useQuery';
 
 let questionNo = 0;
+let lastQuestionNo = 0;
 let remainingTime = 0;
 let startDate = Date.now();
+let lastAnswer = '';
 
 export const useKukuQuestion = () => {
   const [q1, setQ1] = useState(0);
@@ -21,6 +23,7 @@ export const useKukuQuestion = () => {
   const [_isShowCorrect, setIsShowCorrect] = useState(false);
   const ___isShowCorrect = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
+  const _updateTrainingTimer = useRef(() => {});
   const isShowCorrect = useMemo(() => ((isTrainingMode || isOniTrainingMode) && _isShowCorrect) || correctModeQuery === '1', [isTrainingMode, isOniTrainingMode, _isShowCorrect, correctModeQuery]);
   const trainingTime = useMemo(() => isOniTrainingMode ? 1500 : 3000, [isOniTrainingMode]);
 
@@ -51,12 +54,21 @@ export const useKukuQuestion = () => {
     if (remainingTime >= 0) {
       remainingTime = trainingTime - (Date.now() - startDate);
       progressRef.current.style.width = `${(1 - remainingTime / trainingTime) * 100}dvw`;
-      requestAnimationFrame(updateTrainingTimer);
+      requestAnimationFrame(_updateTrainingTimer.current);
       return;
     }
+    const currentAnswer = `${q1} x ${q2} = ${ans}`;
+    if (lastAnswer === currentAnswer && lastQuestionNo === questionNo) {
+      return;
+    }
+    lastQuestionNo = questionNo;
+    lastAnswer = currentAnswer;
 
+    incorrect();
+    addAnsweredList(currentAnswer, false);
     setIsShowCorrect(true);
-  }, [isTrainingMode, isOniTrainingMode, trainingTime]);
+  }, [isTrainingMode, isOniTrainingMode, trainingTime, q1, q2, ans, questionNo]);
+  _updateTrainingTimer.current = updateTrainingTimer;
 
   const resetTraining = useCallback(() => {
     remainingTime = isOniTrainingMode ? 1500 : 3000;
@@ -71,10 +83,12 @@ export const useKukuQuestion = () => {
     } else {
       incorrect();
     }
-    addAnsweredList(`${q1} x ${q2} = ${ans}`, isCorrect);
+    if (!isShowCorrect) {
+      addAnsweredList(`${q1} x ${q2} = ${ans}`, isCorrect);
+    }
     resetQuestion({ isLastCorrect: isCorrect });
     resetTraining();
-  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2]);
+  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect]);
 
   const reset = useCallback(() => {
     resetAnsweredList();

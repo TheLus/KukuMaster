@@ -15,8 +15,7 @@ function Page() {
   const { correctRatio } = useAnsweredList();
   const { toggleTimeAttackMode, resetTimeAttack, resultCount, isTimeAttackFinished, isTimeAttackMode, count, questionNoOffset, isTimeAttacking, progressRef } = useTimeAttackMode({ questionNo, reset });
   const { getKukuTitle } = useKukuTitle();
-  const refreshPrefix = useMemo(() => `${isTrainingMode ? '0' : '1'}${isOniTrainingMode ? '0' : '1'}`, [isTrainingMode, isOniTrainingMode]);
-  console.log(isTrainingMode, isOniTrainingMode)
+  const refreshPrefix = useMemo(() => `${isTrainingMode ? '0' : '1'}${isOniTrainingMode ? '0' : '1'}${isShowCorrect ? '0' : '1'}`, [isTrainingMode, isOniTrainingMode, isShowCorrect]);
 
   return (
     <Grid container direction='column' sx={sx}>
