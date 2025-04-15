@@ -10,6 +10,11 @@ export const useCountdownTimer = () => {
     setCount(count);
   }, []);
 
+  const clearCountdown = useCallback(() => {
+    clearTimeout(timerId.current);
+    setCount(-1);
+  }, []);
+
   useEffect(() => {
     if (count <= -1) {
       return;
@@ -19,5 +24,5 @@ export const useCountdownTimer = () => {
     }, 1000);
   }, [count]);
 
-  return { count, beginCountdown }
+  return { count, beginCountdown, clearCountdown }
 };

@@ -16,12 +16,12 @@ type useTimeAttackModeProps = {
 
 export const useTimeAttackMode = ({ questionNo, reset }: useTimeAttackModeProps) => {
   const [isTimeAttackMode, setIsTimeAttackMode] = useState(false);
-  const { play: countdown } = useSound('/countdown.mp3', 0.2);
+  const { play: countdown, stop: stopCountdown } = useSound('/countdown.mp3', 0.2);
   const { play: dodon } = useSound('/dodon.mp3', 0.9);
   const { play: don } = useSound('/don.mp3');
   const [isTimeAttackFinished, setIsTimeAttackFinished] = useState(false);
   const [resultCount, setResultCount] = useState(0);
-  const { beginCountdown, count } = useCountdownTimer();
+  const { beginCountdown, clearCountdown, count } = useCountdownTimer();
   const [questionNoOffset, setQuestionNoOffset] = useState(0);
   const isTimeAttacking = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -87,6 +87,8 @@ export const useTimeAttackMode = ({ questionNo, reset }: useTimeAttackModeProps)
     } else {
       isTimeAttacking.current = false;
       clearTimeout(countdownTimer);
+      stopCountdown();
+      clearCountdown();
     }
   }, [isTimeAttackMode, resetTimeAttack]);
 

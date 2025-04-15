@@ -4,6 +4,7 @@ export const useSound = (src: string, volume: number = 1) => {
   const audioCtx = useRef<AudioContext | null>(null);
   const audioBuffer = useRef<AudioBuffer | null>(null);
   const audioBufferNode = useRef<AudioBufferSourceNode | null>(null);
+  const lastAudioBufferNode = useRef<AudioBufferSourceNode | null>(null);
 
   const prepareAudioBufferNode = useRef(() => {
     if (audioCtx.current == null) {
@@ -32,9 +33,14 @@ export const useSound = (src: string, volume: number = 1) => {
 
   const play = useCallback(() => {
     audioBufferNode.current?.start(0);
+    lastAudioBufferNode.current = audioBufferNode.current;
     prepareAudioBufferNode.current();
   }, []);
 
+  const stop = useCallback(() => {
+    lastAudioBufferNode.current?.stop(0);
+  }, []);
 
-  return { play };
+
+  return { play, stop };
 }

@@ -49,7 +49,7 @@ function Page() {
             </Box>
           </Grid>
           <Grid container justifyContent='center' position='absolute' top='100dvh' width='100%' height='100dvh'>
-            <CountdownTimer count={count} sx={{ position: 'absolute', top: '40dvh', fontSize: 200, transition: 'opacity 0.2s ease', opacity: count > 0 ? 1 : 0 }} />
+            <CountdownTimer count={count} sx={{ position: 'absolute', top: '40dvh', fontSize: 200, transition: count > 0 ? 'opacity 0.2s ease' : 'opacity 0s', opacity: count > 0 ? 1 : 0 }} />
             <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={300} display={isTimeAttacking.current ? 'flex' : 'none'}>
               <AnsweredList />
             </Grid>
