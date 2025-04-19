@@ -21,6 +21,7 @@
     "vike-react": "^0.6.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
     "@types/node": "^22.14.0",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
