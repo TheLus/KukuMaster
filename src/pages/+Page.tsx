@@ -5,29 +5,34 @@ import { useAnsweredList } from '@/hooks/useAnsweredList';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
 import { useKukuTitle } from '@/hooks/useKukuTitle';
 import { useTimeAttackMode } from '@/hooks/useTimeAttackMode';
-import { Box, Button, Grid, SxProps, Typography } from '@mui/material';
-import { useMemo } from 'react';
+import { Box, Button, Grid, Link, SxProps, Typography } from '@mui/material';
+import { useCallback, useMemo } from 'react';
 
 export { Page };
 
 function Page() {
-  const { a1, a2, a3, q1, q2, ans, questionNo, answer, reset, isShowCorrect, isTrainingMode, toggleTrainingMode, isOniTrainingMode, toggleOniTrainingMode, progressRef: trainingProgressRef } = useKukuQuestion();
+  const { a1, a2, a3, q1, q2, ans, questionNo, answer, reset, isShowCorrect, isTrainingMode, toggleTrainingMode, isOniTrainingMode, toggleOniTrainingMode, progressRef: trainingProgressRef, finishTrainingMode } = useKukuQuestion();
   const { correctRatio } = useAnsweredList();
-  const { toggleTimeAttackMode, resetTimeAttack, resultCount, isTimeAttackFinished, isTimeAttackMode, count, questionNoOffset, isTimeAttacking, progressRef } = useTimeAttackMode({ questionNo, reset });
+  const { toggleTimeAttackMode: _toggleTimeAttackMode, resetTimeAttack, resultCount, isTimeAttackFinished, isTimeAttackMode, count, questionNoOffset, isTimeAttacking, progressRef } = useTimeAttackMode({ questionNo, reset });
   const { getKukuTitle } = useKukuTitle();
   const refreshPrefix = useMemo(() => `${isTrainingMode ? '0' : '1'}${isOniTrainingMode ? '0' : '1'}${isShowCorrect ? '0' : '1'}`, [isTrainingMode, isOniTrainingMode, isShowCorrect]);
+
+  const toggleTimeAttackMode = useCallback(() => {
+    _toggleTimeAttackMode();
+  }, [_toggleTimeAttackMode]);
 
   return (
     <Grid container direction='column' sx={sx}>
       <Grid container position='absolute' left={10} top={10} width={90} zIndex={1}>
         <Button onClick={toggleTimeAttackMode} variant={isTimeAttackMode ? 'contained' : 'outlined'} >タイム<br/>アタック</Button>
       </Grid>
-      <Grid container position='absolute' right={10} top={10} width={90} zIndex={1} gap={0.5}>
-        <Button onClick={toggleTrainingMode} variant={isTrainingMode ? 'contained' : 'outlined'} sx={{ width: 90, height: 28 }}>修行</Button>
-        <Button onClick={toggleOniTrainingMode} variant={isOniTrainingMode ? 'contained' : 'outlined'} sx={{ width: 90, height: 28 }}>鬼修行</Button>
-      </Grid>
       <Grid container className='TopPage' justifyContent='center'>
         <Grid container className='Scroller' justifyContent='center' style={{ transform: isTimeAttackMode ? 'translateY(-100dvh)' : 'none' }}>
+          <Grid container position='absolute' right={10} top={10} width={90} zIndex={1} gap={0.5}>
+            <Button onClick={toggleTrainingMode} variant={isTrainingMode ? 'contained' : 'outlined'} sx={{ width: 90, height: 28 }}>修行</Button>
+            <Button onClick={toggleOniTrainingMode} variant={isOniTrainingMode ? 'contained' : 'outlined'} sx={{ width: 90, height: 28 }}>鬼修行</Button>
+            <Button variant='outlined' sx={{ width: 90, height: 28 }} component={Link} href='./test'>試練</Button>
+          </Grid>
           <Grid container justifyContent='center' width='100%'>
             <Grid container direction='column' maxWidth={700} alignItems='center' position='absolute' bottom={300}>
               <AnsweredList />

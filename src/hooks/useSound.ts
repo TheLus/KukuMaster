@@ -21,7 +21,7 @@ export const useSound = (src: string, volume: number = 1) => {
   useEffect(() => {
     const initialAudio = async() => {
       audioCtx.current = new AudioContext();
-      const response = await fetch(`${window.location.href}${src}`)
+      const response = await fetch(`${import.meta.env.BASE_URL}${src}`)
       const responseBuffer = await response.arrayBuffer();
 
       audioBuffer.current = await audioCtx.current.decodeAudioData(responseBuffer);

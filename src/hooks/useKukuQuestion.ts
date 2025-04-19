@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
 import { useQuery } from './useQuery';
+import { getRandom } from '@/utils/getRandom';
 
 let questionNo = 0;
 let lastQuestionNo = 0;
@@ -9,7 +10,21 @@ let remainingTime = 0;
 let startDate = Date.now();
 let lastAnswer = '';
 
+const defaultWeights = {
+  0: 0,
+  1: 0,
+  2: 1,
+  3: 1,
+  4: 1,
+  5: 1,
+  6: 1,
+  7: 1,
+  8: 1,
+  9: 1,
+};
+
 export const useKukuQuestion = () => {
+  const table = useRef(-1);
   const [q1, setQ1] = useState(0);
   const [q2, setQ2] = useState(0);
   const [a, setA] = useState([1, 0, 0]);
@@ -30,8 +45,8 @@ export const useKukuQuestion = () => {
   const resetQuestion = useCallback(({ isLastCorrect = false }: { isLastCorrect: boolean } = { isLastCorrect: false }) => {
     questionNo++;
     const isResetQuestion = !((isTrainingMode || isOniTrainingMode) && (!isLastCorrect || ___isShowCorrect.current));
-    const newQ1 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q1;
-    const newQ2 = isResetQuestion ? Math.floor(Math.random() * 8) + 2 : q2;
+    const newQ1 = !isResetQuestion ? q1 : table.current === -1 ? getRandom(defaultWeights) : table.current;
+    const newQ2 = !isResetQuestion ? q2 : getRandom(table.current === -1 ? defaultWeights : { ...defaultWeights, [q2]: 0 });
     const newA = [0, 0, 0];
     const correctNo = Math.floor(Math.random() * 3);
     newA[0] = newQ1 * newQ2 + newQ1 * (0 - correctNo);
@@ -90,7 +105,8 @@ export const useKukuQuestion = () => {
     resetTraining();
   }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect]);
 
-  const reset = useCallback(() => {
+  const reset = useCallback(({ table: _table }: { table: number } = { table: -1 }) => {
+    table.current = _table;
     resetAnsweredList();
     resetQuestion();
   }, [resetAnsweredList]);
@@ -125,6 +141,12 @@ export const useKukuQuestion = () => {
     });
   }, []);
 
+  const finishTrainingMode = useCallback(() => {
+    setIsTrainingMode(false);
+    setIsOniTrainingMode(false);
+    setIsShowCorrect(false);
+  }, []);
+
   useEffect(() => {
     ___isShowCorrect.current = _isShowCorrect;
   }, [_isShowCorrect]);
@@ -145,5 +167,6 @@ export const useKukuQuestion = () => {
     isOniTrainingMode,
     isShowCorrect,
     progressRef,
+    finishTrainingMode,
   };
 };

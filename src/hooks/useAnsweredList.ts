@@ -3,10 +3,7 @@ let answeredList: { formula: string, isCorrect: boolean }[] = [];
 let correctRatio = 0;
 
 const addAnsweredList = (formula: string, isCorrect: boolean) => {
-  answeredList.push({
-    formula,
-    isCorrect,
-  });
+  answeredList = [...answeredList, { formula, isCorrect }];
   correctRatio = answeredList.filter(({ isCorrect }) => isCorrect).length / answeredList.length;
 }
 
