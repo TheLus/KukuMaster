@@ -3,7 +3,7 @@ import { useSound } from './useSound';
 import { useAnsweredList } from './useAnsweredList';
 import { useQuery } from './useQuery';
 import { getRandom } from '@/utils/getRandom';
-
+import { useSupportMode } from './useSupportMode';
 let questionNo = 0;
 let lastQuestionNo = 0;
 let remainingTime = 0;
@@ -36,7 +36,7 @@ export const useKukuQuestion = () => {
   const [isTrainingMode, setIsTrainingMode] = useState(false);
   const [isOniTrainingMode, setIsOniTrainingMode] = useState(false);
   const [_isShowCorrect, setIsShowCorrect] = useState(false);
-  const [isSupportMode, setIsSupportMode] = useState(false);
+  const { getIsSupportMode } = useSupportMode();
   const [isAlreadyFailedOnce, setIsAlreadyFailedOnce] = useState(false);
   const ___isShowCorrect = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -98,7 +98,7 @@ export const useKukuQuestion = () => {
     if (isCorrect) {
       correct();
     } else {
-      if (isSupportMode) {
+      if (getIsSupportMode()) {
         setIsAlreadyFailedOnce(true);
         return;
       }
@@ -109,7 +109,7 @@ export const useKukuQuestion = () => {
     }
     resetQuestion({ isLastCorrect: isCorrect });
     resetTraining();
-  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect, isSupportMode]);
+  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect, getIsSupportMode]);
 
   const reset = useCallback(({ table: _table }: { table: number } = { table: -1 }) => {
     table.current = _table;
@@ -147,16 +147,6 @@ export const useKukuQuestion = () => {
     });
   }, []);
 
-  const toggleSupportMode = useCallback(() => {
-    setIsSupportMode((current) => {
-      const next = !current;
-      if (!next) {
-        setIsAlreadyFailedOnce(false);
-      }
-      return next;
-    });
-  }, []);
-
   const finishTrainingMode = useCallback(() => {
     setIsTrainingMode(false);
     setIsOniTrainingMode(false);
@@ -184,8 +174,6 @@ export const useKukuQuestion = () => {
     isShowCorrect,
     progressRef,
     finishTrainingMode,
-    isSupportMode,
-    toggleSupportMode,
     isAlreadyFailedOnce,
   };
 };

@@ -1,16 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSupportMode } from "./useSupportMode";
 
-let completedTests: Record<string, boolean> = {};
+let completedTests: Record<string, boolean |number> = {};
 
 export const useCompletedTests = () => {
+  const { getIsSupportMode } = useSupportMode();
 
   const completeTest = useCallback((level: number, table: number) => {
-    completedTests[`${level}-${table}`] = true;
+    completedTests[`${level}-${table}`] = getIsSupportMode() ? 2 : 1;
     localStorage.setItem('completedTests', JSON.stringify(completedTests));
   }, []);
 
   const inCorrectTest = useCallback((level: number, table: number) => {
-    completedTests[`${level}-${table}`] = false;
+    completedTests[`${level}-${table}`] = 0;
     localStorage.setItem('completedTests', JSON.stringify(completedTests));
   }, []);
 

@@ -31,11 +31,13 @@ export const TestButton = ({ children, onClick, table, time, passing, level }: T
     }
   }, [getIsComplete, level, table]);
 
+  const completeType = getIsComplete(level, table);
+
   return <Button
           onClick={handleClick}
-          variant={getIsComplete(level, table) ? 'contained' : 'outlined'}
+          variant={(completeType === true || completeType === 1) ? 'contained' : 'outlined'}
           sx={{ width: 112 }}
-          startIcon={getIsComplete(level, table) ? <Star /> : undefined}
+          startIcon={completeType ? <Star /> : undefined}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >{ children }</Button>

@@ -2,25 +2,23 @@ import { AnswerButton } from '@/components/AnswerButton';
 import { AnsweredList } from '@/components/AnsweredList';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import { TestButton } from '@/components/TestButton';
-import { useAnsweredList } from '@/hooks/useAnsweredList';
 import { useCompletedTests } from '@/hooks/useCompletedTests';
 import { useKukuQuestion } from '@/hooks/useKukuQuestion';
-import { useKukuTitle } from '@/hooks/useKukuTitle';
 import { useTestMode } from '@/hooks/useTestMode';
-import { useTimeAttackMode } from '@/hooks/useTimeAttackMode';
 import { CircleOutlined } from '@mui/icons-material';
 import { Circle } from '@mui/icons-material';
 import { Box, Button, Grid, Link, SxProps, Typography } from '@mui/material';
 import { useCallback, useMemo } from 'react';
+import { useSupportMode } from '@/hooks/useSupportMode';
 
 export { Page };
 
 function Page() {
-  const { a1, a2, a3, q1, q2, questionNo, answer, reset, isSupportMode, toggleSupportMode, isAlreadyFailedOnce } = useKukuQuestion();
+  const { a1, a2, a3, q1, q2, questionNo, answer, reset, isAlreadyFailedOnce } = useKukuQuestion();
   const { beginTest, isTestMode, count, isTesting, progressRef, passingCount, passing, isTestFinished, resetTest, setIsTestMode } = useTestMode({ questionNo, reset });
   const isPassed = useMemo(() => passingCount >= passing, [passingCount, passing]);
   const { getIsComplete } = useCompletedTests();
-
+  const { isSupportMode, toggleSupportMode } = useSupportMode();
   const finishTest = useCallback(() => {
     setIsTestMode(false);
   }, [setIsTestMode]);
