@@ -36,6 +36,8 @@ export const useKukuQuestion = () => {
   const [isTrainingMode, setIsTrainingMode] = useState(false);
   const [isOniTrainingMode, setIsOniTrainingMode] = useState(false);
   const [_isShowCorrect, setIsShowCorrect] = useState(false);
+  const [isSupportMode, setIsSupportMode] = useState(false);
+  const [isAlreadyFailedOnce, setIsAlreadyFailedOnce] = useState(false);
   const ___isShowCorrect = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
   const _updateTrainingTimer = useRef(() => {});
@@ -55,7 +57,7 @@ export const useKukuQuestion = () => {
     setQ1(newQ1);
     setQ2(newQ2);
     setA(newA);
-
+    setIsAlreadyFailedOnce(false);
     setIsShowCorrect(false);
   }, [q1, q2, isTrainingMode, isOniTrainingMode]);
 
@@ -96,6 +98,10 @@ export const useKukuQuestion = () => {
     if (isCorrect) {
       correct();
     } else {
+      if (isSupportMode) {
+        setIsAlreadyFailedOnce(true);
+        return;
+      }
       incorrect();
     }
     if (!isShowCorrect) {
@@ -103,7 +109,7 @@ export const useKukuQuestion = () => {
     }
     resetQuestion({ isLastCorrect: isCorrect });
     resetTraining();
-  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect]);
+  }, [addAnsweredList, correct, incorrect, resetQuestion, resetTraining, q1, q2, isShowCorrect, isSupportMode]);
 
   const reset = useCallback(({ table: _table }: { table: number } = { table: -1 }) => {
     table.current = _table;
@@ -141,6 +147,16 @@ export const useKukuQuestion = () => {
     });
   }, []);
 
+  const toggleSupportMode = useCallback(() => {
+    setIsSupportMode((current) => {
+      const next = !current;
+      if (!next) {
+        setIsAlreadyFailedOnce(false);
+      }
+      return next;
+    });
+  }, []);
+
   const finishTrainingMode = useCallback(() => {
     setIsTrainingMode(false);
     setIsOniTrainingMode(false);
@@ -168,5 +184,8 @@ export const useKukuQuestion = () => {
     isShowCorrect,
     progressRef,
     finishTrainingMode,
+    isSupportMode,
+    toggleSupportMode,
+    isAlreadyFailedOnce,
   };
 };

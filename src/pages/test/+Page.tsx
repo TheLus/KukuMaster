@@ -16,7 +16,7 @@ import { useCallback, useMemo } from 'react';
 export { Page };
 
 function Page() {
-  const { a1, a2, a3, q1, q2, questionNo, answer, reset } = useKukuQuestion();
+  const { a1, a2, a3, q1, q2, questionNo, answer, reset, isSupportMode, toggleSupportMode, isAlreadyFailedOnce } = useKukuQuestion();
   const { beginTest, isTestMode, count, isTesting, progressRef, passingCount, passing, isTestFinished, resetTest, setIsTestMode } = useTestMode({ questionNo, reset });
   const isPassed = useMemo(() => passingCount >= passing, [passingCount, passing]);
   const { getIsComplete } = useCompletedTests();
@@ -45,6 +45,7 @@ function Page() {
     <Grid container direction='column' sx={sx}>
       <Grid container position='absolute' right={10} top={10} width={90} zIndex={1} gap={0.5}>
         <Button variant='contained' sx={{ width: 90, height: 28 }} component={Link} href={import.meta.env.BASE_URL}>試練</Button>
+        <Button variant={isSupportMode ? 'contained' : 'outlined'} sx={{ width: 90, height: 28 }} onClick={toggleSupportMode}>サポート</Button>
       </Grid>
       <Grid container className='TopPage' justifyContent='center'>
         <Grid container className='Scroller' justifyContent='center' style={{ transform: isTestMode ? 'translateY(-100dvh)' : 'none' }}>
@@ -193,6 +194,9 @@ function Page() {
                 </Grid>
               </Grid>
             </Box>
+            <Grid container position='absolute' bottom={0} width='100dvw' height='100dvh' justifyContent='center' alignItems='center' display={isTesting.current && isSupportMode ? 'flex' : 'none'} sx={{ pointerEvents: 'none' }}>
+              <Typography variant='h2' display={isAlreadyFailedOnce ? 'block' : 'none'} sx={{ backgroundColor: '#fff' }}>本当に？</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
