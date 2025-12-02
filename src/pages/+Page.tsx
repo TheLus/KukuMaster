@@ -23,8 +23,9 @@ function Page() {
 
   return (
     <Grid container direction='column' sx={sx}>
-      <Grid container position='absolute' left={10} top={10} width={90} zIndex={1}>
+      <Grid container position='absolute' left={10} top={10} width={90} zIndex={1} gap={0.5}>
         <Button onClick={toggleTimeAttackMode} variant={isTimeAttackMode ? 'contained' : 'outlined'} >タイム<br/>アタック</Button>
+        <Button variant='outlined' component={Link} href='./kanji'>漢字くじ</Button>
       </Grid>
       <Grid container className='TopPage' justifyContent='center'>
         <Grid container className='Scroller' justifyContent='center' style={{ transform: isTimeAttackMode ? 'translateY(-100dvh)' : 'none' }}>
