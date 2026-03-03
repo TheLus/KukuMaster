@@ -73,7 +73,7 @@ function Page() {
             return {
               recognized: candidates[0] ?? "（認識失敗）",
               correct,
-              isCorrect: candidates.includes(correct),
+              isCorrect: candidates[0] === correct,
             };
           }
           return { recognized: "（認識失敗）", correct, isCorrect: false };

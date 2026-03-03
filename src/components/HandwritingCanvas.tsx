@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
+import UndoIcon from "@mui/icons-material/Undo";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 // Google Input Tools API 互換の stroke 形式: [x[], y[], t[]]
@@ -91,6 +92,26 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
     [w, h],
   );
 
+  const redraw = useCallback(
+    (strokes: Stroke[]) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      initCtx(ctx);
+      for (const [xs, ys] of strokes) {
+        if (xs.length === 0) continue;
+        ctx.beginPath();
+        ctx.moveTo(xs[0], ys[0]);
+        for (let i = 1; i < xs.length; i++) {
+          ctx.lineTo(xs[i], ys[i]);
+        }
+        ctx.stroke();
+      }
+    },
+    [initCtx],
+  );
+
   const clear = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -101,6 +122,14 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
     setStrokeCount(0);
     onChangeRef.current([]);
   }, [initCtx]);
+
+  const undo = useCallback(() => {
+    if (strokesRef.current.length === 0) return;
+    strokesRef.current = strokesRef.current.slice(0, -1);
+    setStrokeCount(strokesRef.current.length);
+    redraw(strokesRef.current);
+    onChangeRef.current(strokesRef.current);
+  }, [redraw]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -201,7 +230,7 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
   return (
     <Box display="flex" flexDirection="row" alignItems="flex-start" gap={1}>
       {/* クリアボタン + 判定結果 を縦に並べる */}
-      <Box display="flex" flexDirection="column" alignItems="center" gap={1} mt={0.5}>
+      <Box display="flex" flexDirection="column" alignItems="center" gap={3} mt={0.5}>
         <Button
           variant="outlined"
           size="small"
@@ -211,6 +240,14 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
         >
           クリア
         </Button>
+        <Button
+          size="small"
+          onClick={undo}
+          variant="outlined"
+          disabled={strokeCount === 0}
+          startIcon={<UndoIcon fontSize="small" />}
+          sx={{ minWidth: 40, minHeight: 40, span: { margin: 0 } }}
+        ></Button>
         {judgment && (
           <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
             <Typography
