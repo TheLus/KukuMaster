@@ -327,7 +327,14 @@ export function HandwritingCanvas({ question, onStrokesChange, judgments }: Prop
       {segments.map((seg, idx) => {
         if (seg.type === "text") {
           return (
-            <Typography key={idx} variant="h4" fontWeight="bold" sx={{ writingMode: "vertical-rl" }}>
+            <Typography
+              key={`${question.text}-${idx}`}
+              variant="h4"
+              fontWeight="bold"
+              whiteSpace="nowrap"
+              sx={{ writingMode: "vertical-rl" }}
+              height="fit-content"
+            >
               {seg.content}
             </Typography>
           );
