@@ -1,39 +1,17 @@
 import { Button, CircularProgress, Grid, Link, SxProps, Typography } from "@mui/material";
 import { useCallback, useState } from "react";
-import { CANVAS_CELL, HandwritingCanvas, type JudgmentResult, type Question, type Stroke } from "@/components/HandwritingCanvas";
+import {
+  CANVAS_CELL,
+  HandwritingCanvas,
+  type JudgmentResult,
+  type Question,
+  type Stroke,
+} from "@/components/HandwritingCanvas";
 import { useToggle } from "@/hooks/useToggle";
 import { useSound } from "@/hooks/useSound";
+import { grade3 } from "./questions";
 
 export { Page };
-
-const grade3: Question[] = [
-  {
-    text: "〇〇を言う",
-    ruby: ["りゆう"],
-    correct: ["理由"],
-  },
-  {
-    text: "お話の〇〇〇〇",
-    ruby: ["とうじょうじんぶつ"],
-    correct: ["登場人物"],
-  },
-  {
-    text: "子ども〇の〇〇さん",
-    ruby: ["ふく", "とんや"],
-    correct: ["服", "問屋"],
-  },
-  {
-    text: "手を〇〇",
-    ruby: ["うごかす"],
-    correct: ["動かす"],
-  },
-  {
-    text: "〇〇を〇〇",
-    ruby: ["ようふく", "きる"],
-    correct: ["洋服", "着る"],
-  },
-];
-
 
 function Page() {
   const [is1Grade, toggle1Grade] = useToggle();
@@ -64,33 +42,30 @@ function Page() {
             return { recognized: "（未記入）", correct, isCorrect: false };
           }
 
-          const res = await fetch(
-            "https://inputtools.google.com/request?itc=ja-t-i0-handwrit&num=10",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                app_version: 0.4,
-                api_level: "537.36",
-                device: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                input_type: 0,
-                options: "enable_pre_space",
-                requests: [
-                  {
-                    writing_guide: {
-                      writing_area_width: CANVAS_CELL,
-                      writing_area_height: CANVAS_CELL * charCount,
-                    },
-                    pre_context: "",
-                    max_num_results: 10,
-                    max_completions: 0,
-                    language: "ja",
-                    ink: strokes,
+          const res = await fetch("https://inputtools.google.com/request?itc=ja-t-i0-handwrit&num=10", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              app_version: 0.4,
+              api_level: "537.36",
+              device: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+              input_type: 0,
+              options: "enable_pre_space",
+              requests: [
+                {
+                  writing_guide: {
+                    writing_area_width: CANVAS_CELL,
+                    writing_area_height: CANVAS_CELL * charCount,
                   },
-                ],
-              }),
-            },
-          );
+                  pre_context: "",
+                  max_num_results: 10,
+                  max_completions: 0,
+                  language: "ja",
+                  ink: strokes,
+                },
+              ],
+            }),
+          });
           const data = await res.json();
           // レスポンス形式: ["SUCCESS", [["", ["候補1", ...], null, {...}]]]
           if (data[0] === "SUCCESS") {
@@ -182,23 +157,28 @@ function Page() {
             </Button>
           </Grid>
         </Grid>
-        <Button onClick={randomSelect} variant="contained" sx={{ alignSelf: "center" }}>
+        <Button
+          onClick={randomSelect}
+          variant="contained"
+          sx={{ alignSelf: "center", display: selectedKanji ? "none" : "block" }}
+        >
           スタート
         </Button>
-        <HandwritingCanvas
-          onStrokesChange={setStrokeGroups}
-          question={selectedKanji}
-          judgments={judgments}
-        />
-        <Button
-          variant="contained"
-          onClick={recognize}
-          disabled={!selectedKanji || strokeGroups.every((g) => g.length === 0) || isLoading}
-          sx={{ alignSelf: "center" }}
-          startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : null}
-        >
-          {isLoading ? "判定中..." : "判定する"}
-        </Button>
+        <HandwritingCanvas onStrokesChange={setStrokeGroups} question={selectedKanji} judgments={judgments} />
+        <Grid container justifyContent="center" gap={6} sx={{ display: selectedKanji ? "flex" : "none" }}>
+          <Button
+            variant="contained"
+            onClick={recognize}
+            disabled={!selectedKanji || strokeGroups.every((g) => g.length === 0) || isLoading}
+            sx={{ alignSelf: "center" }}
+            startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : null}
+          >
+            {isLoading ? "判定中..." : "判定する"}
+          </Button>
+          <Button onClick={randomSelect} variant="outlined">
+            次の問題
+          </Button>
+        </Grid>
       </Grid>
     </Grid>
   );
