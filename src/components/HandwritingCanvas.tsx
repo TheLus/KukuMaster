@@ -1,6 +1,7 @@
 import UndoIcon from "@mui/icons-material/Undo";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { StrokeOrderDisplay } from "./StrokeOrderDisplay";
 
 // Google Input Tools API 互換の stroke 形式: [x[], y[], t[]]
 export type Stroke = [number[], number[], number[]];
@@ -230,7 +231,7 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
   return (
     <Box display="flex" flexDirection="row" alignItems="flex-start" gap={1}>
       {/* クリアボタン + 判定結果 を縦に並べる */}
-      <Box display="flex" flexDirection="column" alignItems="center" gap={3} mt={0.5}>
+      <Box display="flex" flexDirection="column" alignItems="center" gap={3} mt={0.5} width={80}>
         <Button
           variant="outlined"
           size="small"
@@ -249,22 +250,16 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
           sx={{ minWidth: 40, minHeight: 40, span: { margin: 0 } }}
         ></Button>
         {judgment && (
-          <Box display="flex" flexDirection="column" alignItems="center" gap={0.5}>
-            <Typography
-              variant="h5"
-              color={judgment.isCorrect ? "success.main" : "error.main"}
-              sx={{ writingMode: "vertical-rl" }}
-            >
+          <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+            <Typography variant="h5" color={judgment.isCorrect ? "success.main" : "error.main"}>
               {judgment.isCorrect ? "○" : "✗"}
             </Typography>
-            <Typography variant="body2" sx={{ writingMode: "vertical-rl" }}>
-              {judgment.recognized}
-            </Typography>
             {!judgment.isCorrect && (
-              <Typography variant="caption" color="text.secondary" sx={{ writingMode: "vertical-rl" }}>
-                {judgment.correct}
+              <Typography variant="body2" sx={{ writingMode: "vertical-rl" }}>
+                {judgment.recognized}
               </Typography>
             )}
+            <StrokeOrderDisplay correct={[judgment.correct]} showLabel={false} flexDirection="column" />
           </Box>
         )}
       </Box>
@@ -342,7 +337,7 @@ export function HandwritingCanvas({ question, onStrokesChange, judgments }: Prop
 
         return (
           // key に question.text を含めて問題切替時に確実に再マウント
-          <Box key={`${question.text}-${idx}`} display="flex" flexDirection="row" alignItems="center" gap={1} mr={1}>
+          <Box key={`${question.text}-${idx}`} display="flex" flexDirection="row" alignItems="center" gap={1} mr={6}>
             <DrawableCanvas
               charCount={seg.count}
               onStrokesChange={(s) => handleChange(seg.rubyIdx, s)}
