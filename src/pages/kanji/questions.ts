@@ -1542,7 +1542,7 @@ export const grade3: Question[] = [
   },
   // kanji_18
   {
-    text: "具の〇〇",
+    text: "貝の〇〇",
     ruby: ["かせき"],
     correct: ["化石"],
   },

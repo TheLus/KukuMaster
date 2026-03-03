@@ -1,5 +1,5 @@
-import { Button, CircularProgress, Grid, Link, SxProps, Typography } from "@mui/material";
-import { useCallback, useState } from "react";
+import { Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, SxProps, Typography } from "@mui/material";
+import { useCallback, useMemo, useState } from "react";
 import {
   CANVAS_CELL,
   HandwritingCanvas,
@@ -13,6 +13,17 @@ import { grade3 } from "./questions";
 
 export { Page };
 
+const STORAGE_KEY = "kukumaster_kanji_correct";
+
+function loadCorrectTexts(): Set<string> {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
 function Page() {
   const [is1Grade, toggle1Grade] = useToggle();
   const [is2Grade, toggle2Grade] = useToggle();
@@ -24,8 +35,21 @@ function Page() {
   const [strokeGroups, setStrokeGroups] = useState<Stroke[][]>([]);
   const [judgments, setJudgments] = useState<JudgmentResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showOnlyNotDone, setShowOnlyNotDone] = useState(false);
+  const [correctTexts, setCorrectTexts] = useState<Set<string>>(loadCorrectTexts);
   const { play: playCorrect } = useSound("/correct.mp3");
   const { play: playIncorrect } = useSound("/incorrect.mp3", 0.3);
+
+  const allTargets = useMemo(() => {
+    let targets: Question[] = [];
+    if (is3Grade) targets = [...targets, ...grade3];
+    return targets;
+  }, [is3Grade]);
+
+  const correctCount = useMemo(
+    () => allTargets.filter((q) => correctTexts.has(q.text)).length,
+    [allTargets, correctTexts],
+  );
 
   const recognize = useCallback(async () => {
     if (!selectedKanji) return;
@@ -82,6 +106,12 @@ function Page() {
       setJudgments(results);
       if (results.every((r) => r.isCorrect)) {
         playCorrect();
+        setCorrectTexts((prev) => {
+          const next = new Set(prev);
+          next.add(selectedKanji.text);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]));
+          return next;
+        });
       } else {
         playIncorrect();
       }
@@ -112,15 +142,24 @@ function Page() {
     // if (is6Grade) {
     //   targets = [...targets, ...grade6];
     // }
+    if (showOnlyNotDone) {
+      const notDone = targets.filter((q) => !correctTexts.has(q.text));
+      if (notDone.length > 0) targets = notDone;
+    }
     // 配列をシャッフル
     targets.forEach((_, i) => {
       let a = Math.trunc(Math.random() * (targets.length - i) + i);
       [targets[i], targets[a]] = [targets[a], targets[i]];
     });
 
-    setSelectedKanji(targets[0]);
+    setSelectedKanji(targets[0] ?? null);
     setJudgments([]);
-  }, [is1Grade, is2Grade, is3Grade, is4Grade, is5Grade, is6Grade]);
+  }, [is1Grade, is2Grade, is3Grade, is4Grade, is5Grade, is6Grade, showOnlyNotDone, correctTexts]);
+
+  const resetProgress = useCallback(() => {
+    setCorrectTexts(new Set());
+    localStorage.removeItem(STORAGE_KEY);
+  }, []);
 
   return (
     <Grid container direction="column" sx={sx}>
@@ -130,6 +169,13 @@ function Page() {
           <br />
           マスター
         </Button>
+      </Grid>
+      <Grid container position="absolute" right={10} top={10} width={90} zIndex={1} gap={0.5}>
+        {correctCount > 0 && (
+          <Button size="small" variant="outlined" color="error" onClick={resetProgress}>
+            リセット
+          </Button>
+        )}
       </Grid>
       <Grid container className="TopPage" justifyContent="start" direction="column" gap={4}>
         <Grid container direction="column" alignItems="center" gap={2} mt={6}>
@@ -155,6 +201,17 @@ function Page() {
             <Button onClick={toggle6Grade} variant={is6Grade ? "contained" : "outlined"}>
               6 年生
             </Button>
+          </Grid>
+          <Grid container alignItems="center" justifyContent="center" gap={2} flexWrap="wrap">
+            <FormControlLabel
+              control={<Checkbox checked={showOnlyNotDone} onChange={(e) => setShowOnlyNotDone(e.target.checked)} />}
+              label="やったことない問題のみ"
+            />
+            {allTargets.length > 0 && (
+              <Typography variant="body2">
+                正解: {correctCount} / {allTargets.length} 問
+              </Typography>
+            )}
           </Grid>
         </Grid>
         <Button
