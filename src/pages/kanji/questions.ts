@@ -367,7 +367,7 @@ export const grade3: Question[] = [
     correct: ["調子"],
   },
   {
-    text: "〇とら。",
+    text: "〇とうら。",
     ruby: ["おもて"],
     correct: ["表"],
   },
@@ -1693,7 +1693,7 @@ export const grade3: Question[] = [
     correct: ["氷山"],
   },
   {
-    text: "〇〇にはつもうでに行く。",
+    text: "〇〇に初もうでに行く。",
     ruby: ["じんじゃ"],
     correct: ["神社"],
   },
