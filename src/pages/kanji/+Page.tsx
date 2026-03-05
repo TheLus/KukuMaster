@@ -1,4 +1,4 @@
-import { Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, SxProps, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, SxProps, Typography } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import {
   CANVAS_CELL,
@@ -170,7 +170,10 @@ function Page() {
           マスター
         </Button>
       </Grid>
-      <Grid container position="absolute" right={10} top={10} width={90} zIndex={1} gap={0.5}>
+      <Grid container position="absolute" right={10} top={10} width={74} zIndex={1} gap={0.5}>
+        <Button onClick={randomSelect} variant="outlined" size="small">
+          次の問題
+        </Button>{" "}
         {correctCount > 0 && (
           <Button size="small" variant="outlined" color="error" onClick={resetProgress}>
             リセット
@@ -222,19 +225,25 @@ function Page() {
           スタート
         </Button>
         <HandwritingCanvas onStrokesChange={setStrokeGroups} question={selectedKanji} judgments={judgments} />
-        <Grid container justifyContent="center" gap={6} sx={{ display: selectedKanji ? "flex" : "none" }}>
+        <Grid container justifyContent="center" alignItems="center" sx={{ display: selectedKanji ? "flex" : "none" }}>
+          {/* 左スペーサー：判定ボタンを中央に保つ */}
+          <Box sx={{ visibility: "hidden", pointerEvents: "none" }}>
+            {judgments.length > 0 && <Button variant="outlined">次の問題へ</Button>}
+          </Box>
           <Button
             variant="contained"
             onClick={recognize}
             disabled={!selectedKanji || strokeGroups.every((g) => g.length === 0) || isLoading}
-            sx={{ alignSelf: "center" }}
+            sx={{ mx: 2 }}
             startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : null}
           >
             {isLoading ? "判定中..." : "判定する"}
           </Button>
-          <Button onClick={randomSelect} variant="outlined">
-            次の問題
-          </Button>
+          {judgments.length > 0 && (
+            <Button variant="outlined" onClick={randomSelect}>
+              次の問題へ
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Grid>

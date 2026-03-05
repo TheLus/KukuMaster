@@ -1,14 +1,20 @@
 import { Box, Typography } from "@mui/material";
 import { useEffect, useRef } from "react";
 
+function isHiragana(ch: string): boolean {
+  const code = ch.charCodeAt(0);
+  return code >= 0x3041 && code <= 0x3096;
+}
+
 async function fetchKanjiSvg(ch: string): Promise<SVGSVGElement> {
   const code = ch.charCodeAt(0).toString(16).toLowerCase().padStart(5, "0");
   const url = `https://kanjivg.tagaini.net/kanjivg/kanji/${code}.svg`;
   const xml = await fetch(url).then((r) => r.text());
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGSVGElement;
   svg.setAttribute("viewBox", "0 0 109 109");
-  svg.style.width = "80px";
-  svg.style.height = "80px";
+  const size = isHiragana(ch) ? "60px" : "80px";
+  svg.style.width = size;
+  svg.style.height = size;
   svg.style.display = "inline-block";
   svg.style.cursor = "pointer";
   svg.innerHTML = xml;
@@ -18,7 +24,7 @@ async function fetchKanjiSvg(ch: string): Promise<SVGSVGElement> {
 // 1 SVG unit あたりのアニメーション時間 (ms)
 // KanjiVG の viewBox は 109×109。典型的な1画のパス長は 30〜150 unit 程度。
 // 4ms/unit にすると約 120unit の画が 480ms ≈ 0.5秒で描かれる。
-const MS_PER_UNIT = 5;
+const MS_PER_UNIT = 4;
 
 async function animateKanji(svg: SVGSVGElement, signal: AbortSignal) {
   const paths = svg.querySelectorAll<SVGPathElement>("path");
@@ -127,7 +133,7 @@ export function StrokeOrderDisplay({ correct, showLabel = true, flexDirection = 
         flexDirection={flexDirection}
         flexWrap="wrap"
         justifyContent="center"
-        gap={1}
+        alignItems="center"
       />
     </Box>
   );
