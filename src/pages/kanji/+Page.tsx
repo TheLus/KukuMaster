@@ -1,4 +1,14 @@
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Grid, Link, SxProps, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  FormControlLabel,
+  Grid,
+  Link,
+  SxProps,
+  Typography,
+} from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import {
   CANVAS_CELL,
@@ -9,7 +19,12 @@ import {
 } from "@/components/HandwritingCanvas";
 import { useToggle } from "@/hooks/useToggle";
 import { useSound } from "@/hooks/useSound";
-import { grade3 } from "./questions";
+import { grade1 } from "./questions/grade1";
+import { grade2 } from "./questions/grade2";
+import { grade3 } from "./questions/grade3";
+import { grade4 } from "./questions/grade4";
+import { grade5 } from "./questions/grade5";
+import { grade6 } from "./questions/grade6";
 
 export { Page };
 
@@ -42,9 +57,14 @@ function Page() {
 
   const allTargets = useMemo(() => {
     let targets: Question[] = [];
+    if (is1Grade) targets = [...targets, ...grade1];
+    if (is2Grade) targets = [...targets, ...grade2];
     if (is3Grade) targets = [...targets, ...grade3];
+    if (is4Grade) targets = [...targets, ...grade4];
+    if (is5Grade) targets = [...targets, ...grade5];
+    if (is6Grade) targets = [...targets, ...grade6];
     return targets;
-  }, [is3Grade]);
+  }, [is1Grade, is2Grade, is3Grade, is4Grade, is5Grade, is6Grade]);
 
   const correctCount = useMemo(
     () => allTargets.filter((q) => correctTexts.has(q.text)).length,
@@ -124,24 +144,12 @@ function Page() {
 
   const randomSelect = useCallback(() => {
     let targets: Question[] = [];
-    // if (is1Grade) {
-    //   targets = [...targets, ...grade1];
-    // }
-    // if (is2Grade) {
-    //   targets = [...targets, ...grade2];
-    // }
-    if (is3Grade) {
-      targets = [...targets, ...grade3];
-    }
-    // if (is4Grade) {
-    //   targets = [...targets, ...grade4];
-    // }
-    // if (is5Grade) {
-    //   targets = [...targets, ...grade5];
-    // }
-    // if (is6Grade) {
-    //   targets = [...targets, ...grade6];
-    // }
+    if (is1Grade) targets = [...targets, ...grade1];
+    if (is2Grade) targets = [...targets, ...grade2];
+    if (is3Grade) targets = [...targets, ...grade3];
+    if (is4Grade) targets = [...targets, ...grade4];
+    if (is5Grade) targets = [...targets, ...grade5];
+    if (is6Grade) targets = [...targets, ...grade6];
     if (showOnlyNotDone) {
       const notDone = targets.filter((q) => !correctTexts.has(q.text));
       if (notDone.length > 0) targets = notDone;
