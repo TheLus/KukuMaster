@@ -250,7 +250,7 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
           sx={{ minWidth: 40, minHeight: 40, span: { margin: 0 } }}
         ></Button>
         {judgment && (
-          <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
+          <Box display="flex" flexDirection="column" alignItems="center" gap={1} position="absolute" marginTop={16}>
             <Typography variant="h5" color={judgment.isCorrect ? "success.main" : "error.main"}>
               {judgment.isCorrect ? "○" : "✗"}
             </Typography>
