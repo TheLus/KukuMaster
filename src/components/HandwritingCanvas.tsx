@@ -104,9 +104,16 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
         if (xs.length === 0) continue;
         ctx.beginPath();
         ctx.moveTo(xs[0], ys[0]);
+        let lx = xs[0];
+        let ly = ys[0];
         for (let i = 1; i < xs.length; i++) {
-          ctx.lineTo(xs[i], ys[i]);
+          const midX = (lx + xs[i]) / 2;
+          const midY = (ly + ys[i]) / 2;
+          ctx.quadraticCurveTo(lx, ly, midX, midY);
+          lx = xs[i];
+          ly = ys[i];
         }
+        ctx.lineTo(lx, ly);
         ctx.stroke();
       }
     },
@@ -149,6 +156,31 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
     let curT: number[] = [];
     let startTime = 0;
 
+    const drawSmooth = (xs: number[], ys: number[]) => {
+      if (xs.length === 0) return;
+      ctx.beginPath();
+      ctx.moveTo(xs[0], ys[0]);
+      let lx = xs[0];
+      let ly = ys[0];
+      for (let i = 1; i < xs.length; i++) {
+        const midX = (lx + xs[i]) / 2;
+        const midY = (ly + ys[i]) / 2;
+        ctx.quadraticCurveTo(lx, ly, midX, midY);
+        lx = xs[i];
+        ly = ys[i];
+      }
+      ctx.lineTo(lx, ly);
+      ctx.stroke();
+    };
+
+    const redrawAll = (currentX: number[], currentY: number[]) => {
+      initCtx(ctx);
+      for (const [xs, ys] of strokesRef.current) {
+        drawSmooth(xs, ys);
+      }
+      drawSmooth(currentX, currentY);
+    };
+
     const getPos = (e: MouseEvent | Touch) => {
       const r = canvas.getBoundingClientRect();
       return {
@@ -163,17 +195,14 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
       curX = [x];
       curY = [y];
       curT = [0];
-      ctx.beginPath();
-      ctx.moveTo(x, y);
     };
 
     const onMove = (x: number, y: number) => {
       if (!isDrawing) return;
-      ctx.lineTo(x, y);
-      ctx.stroke();
       curX.push(x);
       curY.push(y);
       curT.push(Date.now() - startTime);
+      redrawAll(curX, curY);
     };
 
     const onEnd = () => {
@@ -184,6 +213,7 @@ function DrawableCanvas({ charCount, onStrokesChange, judgment }: DrawableCanvas
         strokesRef.current = [...strokesRef.current, stroke];
         setStrokeCount(strokesRef.current.length);
         onChangeRef.current(strokesRef.current);
+        redrawAll([], []);
       }
       curX = [];
       curY = [];
