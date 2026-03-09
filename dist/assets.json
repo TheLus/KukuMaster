@@ -25,7 +25,7 @@
     "src": "_vike-react-d5f05ff1.BcWtY8Ol.css"
   },
   "node_modules/.pnpm/vike@0.4.227_react-streaming@0.4.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__vite@6._8fe4003005bfac3b43a9536b5fe26e41/node_modules/vike/dist/esm/client/client-routing-runtime/entry.js": {
-    "file": "assets/entries/entry-client-routing.Beefcab3.js",
+    "file": "assets/entries/entry-client-routing.2W4m52Tx.js",
     "name": "entries/entry-client-routing",
     "src": "node_modules/.pnpm/vike@0.4.227_react-streaming@0.4.2_react-dom@19.1.0_react@19.1.0__react@19.1.0__vite@6._8fe4003005bfac3b43a9536b5fe26e41/node_modules/vike/dist/esm/client/client-routing-runtime/entry.js",
     "isEntry": true,
@@ -54,7 +54,7 @@
     ]
   },
   "virtual:vike:pageConfigValuesAll:client:/src/pages/kanji": {
-    "file": "assets/entries/src_pages_kanji.BANkk-T9.js",
+    "file": "assets/entries/src_pages_kanji.BBBpwmLI.js",
     "name": "entries/src/pages/kanji",
     "src": "virtual:vike:pageConfigValuesAll:client:/src/pages/kanji",
     "isEntry": true,
